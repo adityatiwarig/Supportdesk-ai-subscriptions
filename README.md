@@ -142,6 +142,4 @@ Backend: `http://localhost:3000`
 
 ---
 
-## Recommended Repository Name
 
-`supportdesk-ai-subscriptions`
