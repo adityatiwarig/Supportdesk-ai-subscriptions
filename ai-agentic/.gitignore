@@ -13,4 +13,3 @@ coverage/
 # Local env secrets
 .env
 .env.*
-!.env.example

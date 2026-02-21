@@ -68,44 +68,9 @@ Full-stack AI ticket management platform with credit-based access control, subsc
 
 ## Environment Variables
 
-### Backend (`ai-agentic/.env`)
+Environment configuration is required for backend and frontend runtime, but sensitive values are intentionally excluded from repository documentation.
 
-Required core values:
-
-```env
-MONGO_URI=...
-JWT_TOKEN=...
-PORT=3000
-APP_URL=http://localhost:3000
-FRONTEND_URL=http://localhost:5173
-```
-
-Mail:
-
-```env
-MAILTRAP_SMTP_HOST=...
-MAILTRAP_SMTP_PORT=2525
-MAILTRAP_SMTP_USER=...
-MAILTRAP_SMTP_PASS=...
-```
-
-Payments:
-
-```env
-PAYMENT_MODE=mock
-RAZORPAY_KEY_ID=...
-RAZORPAY_KEY_SECRET=...
-RAZORPAY_WEBHOOK_SECRET=...
-RAZORPAY_SUBSCRIPTION_AMOUNT_INR=499
-SUBSCRIPTION_CREDITS=25
-SUBSCRIPTION_PLAN_ID=starter-monthly
-```
-
-Frontend (`frontend/.env`):
-
-```env
-VITE_SERVER_URL=http://localhost:3000/api
-```
+Use local `.env` files for secrets and private service keys.
 
 ---
 
@@ -152,7 +117,7 @@ Backend: `http://localhost:3000`
 - Payment verification is server-side.
 - Duplicate verification guarded via payment status checks.
 - Credit enforcement happens in backend ticket-creation logic.
-- Sensitive values should stay in `.env` and are git-ignored.
+- Sensitive values should stay in local `.env` files and are git-ignored.
 
 ---
 
