@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Runtime logs
+logs
+*.log
+npm-debug.log*
+
+# Build/coverage
+dist/
+coverage/
+
+# Local env secrets
+.env
+.env.*
+!.env.example
