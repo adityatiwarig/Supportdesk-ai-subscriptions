@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "../components/toast-context.js";
+import { API_BASE_URL } from "../config/api.js";
 
 const STATUS_BADGE = {
   PENDING: "badge-warning",
@@ -31,9 +32,9 @@ export default function AssignedWorkPage() {
   const navigate = useNavigate();
   const toast = useToast();
 
-  const fetchAssignedTickets = async () => {
+  const fetchAssignedTickets = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/tickets/assigned`, {
+      const res = await fetch(`${API_BASE_URL}/tickets/assigned`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -60,7 +61,7 @@ export default function AssignedWorkPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast, token]);
 
   useEffect(() => {
     if (!token || user?.role !== "moderator") {
@@ -69,14 +70,14 @@ export default function AssignedWorkPage() {
     }
 
     fetchAssignedTickets();
-  }, []);
+  }, [fetchAssignedTickets, navigate, token, user?.role]);
 
   const updateStatus = async (ticketId, nextStatus) => {
     try {
       setUpdatingId(ticketId);
 
       const res = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/tickets/${ticketId}/status`,
+        `${API_BASE_URL}/tickets/${ticketId}/status`,
         {
           method: "PATCH",
           headers: {
@@ -138,7 +139,7 @@ export default function AssignedWorkPage() {
 
     try {
       setUpdatingId(ticketId);
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/tickets/${ticketId}`, {
+      const res = await fetch(`${API_BASE_URL}/tickets/${ticketId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -304,4 +305,5 @@ export default function AssignedWorkPage() {
     </div>
   );
 }
+
 

@@ -72,6 +72,14 @@ Environment configuration is required for backend and frontend runtime, but sens
 
 Use local `.env` files for secrets and private service keys.
 
+Use the included templates as a deployment baseline:
+- `ai-agentic/.env.example`
+- `frontend/.env.example`
+
+For production, set:
+- Backend: `FRONTEND_URL` and/or `CORS_ORIGIN` to your frontend domain(s).
+- Frontend: `VITE_SERVER_URL` to your deployed API URL (for example, `https://api.example.com/api`).
+
 ---
 
 ## Run Locally
@@ -82,6 +90,8 @@ Use local `.env` files for secrets and private service keys.
 cd ai-agentic
 npm install
 npm run dev
+# production
+npm run start
 ```
 
 ### 2) Frontend
@@ -141,5 +151,4 @@ Backend: `http://localhost:3000`
   - `POST /api/payments/webhook`
 
 ---
-
 

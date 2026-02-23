@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { API_BASE_URL } from "../config/api.js";
 
 export default function ResetPasswordPage() {
   const { token } = useParams();
@@ -26,7 +27,7 @@ export default function ResetPasswordPage() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/reset-password/${token}`, {
+      const res = await fetch(`${API_BASE_URL}/auth/reset-password/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: form.password }),
@@ -93,3 +94,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+

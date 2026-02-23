@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api.js";
 
 export default function SignupPage() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -18,7 +19,7 @@ export default function SignupPage() {
     setError("");
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/signup`, {
+      const res = await fetch(`${API_BASE_URL}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
@@ -100,3 +101,4 @@ export default function SignupPage() {
     </div>
   );
 }
+

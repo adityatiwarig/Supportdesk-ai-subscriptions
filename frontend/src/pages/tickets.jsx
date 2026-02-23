@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useToast } from "../components/toast-context.js";
+import { API_BASE_URL } from "../config/api.js";
 
 const STATUS_BADGE = {
   Todo: "badge-ghost",
@@ -83,7 +84,7 @@ function SubscriptionModal({ open, onClose, token, onCreditsRefresh }) {
     if (!open) return;
     setError("");
     setSuccess(false);
-    fetch(`${import.meta.env.VITE_SERVER_URL}/payments/config`, {
+    fetch(`${API_BASE_URL}/payments/config`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json())
@@ -104,7 +105,7 @@ function SubscriptionModal({ open, onClose, token, onCreditsRefresh }) {
     setError("");
 
     try {
-      const orderRes = await fetch(`${import.meta.env.VITE_SERVER_URL}/payments/create-order`, {
+      const orderRes = await fetch(`${API_BASE_URL}/payments/create-order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -124,7 +125,7 @@ function SubscriptionModal({ open, onClose, token, onCreditsRefresh }) {
 
       if (orderData.mode === "mock" || plan.mode === "mock") {
         setVerifying(true);
-        const verifyRes = await fetch(`${import.meta.env.VITE_SERVER_URL}/payments/verify`, {
+        const verifyRes = await fetch(`${API_BASE_URL}/payments/verify`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -184,7 +185,7 @@ function SubscriptionModal({ open, onClose, token, onCreditsRefresh }) {
         handler: async (response) => {
           setVerifying(true);
           try {
-            const verifyRes = await fetch(`${import.meta.env.VITE_SERVER_URL}/payments/verify`, {
+            const verifyRes = await fetch(`${API_BASE_URL}/payments/verify`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -367,7 +368,7 @@ export default function Tickets() {
       return;
     }
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/payments/credits`, {
+      const res = await fetch(`${API_BASE_URL}/payments/credits`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -388,7 +389,7 @@ export default function Tickets() {
 
   const fetchTickets = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/tickets`, {
+      const res = await fetch(`${API_BASE_URL}/tickets`, {
         headers: { Authorization: `Bearer ${token}` },
         method: "GET",
       });
@@ -457,7 +458,7 @@ export default function Tickets() {
     }
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/tickets`, {
+      const res = await fetch(`${API_BASE_URL}/tickets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -504,7 +505,7 @@ export default function Tickets() {
 
     try {
       setDeletingId(ticket._id);
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/tickets/${ticket._id}`, {
+      const res = await fetch(`${API_BASE_URL}/tickets/${ticket._id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -732,4 +733,5 @@ export default function Tickets() {
     </div>
   );
 }
+
 

@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../config/api.js";
 
 const ROLE_BADGE = {
   admin: "badge-error",
@@ -18,17 +19,6 @@ export default function AdminPanel() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-
-    if (!token || user?.role !== "admin") {
-      navigate("/", { replace: true });
-      return;
-    }
-
-    fetchUsers();
-  }, []);
-
   const moderatorStats = useMemo(() => {
     const moderators = users.filter((u) => u.role === "moderator");
     const totalSolved = moderators.reduce((sum, mod) => sum + (mod.issuesResolved || 0), 0);
@@ -36,9 +26,9 @@ export default function AdminPanel() {
     return { moderators: moderators.length, totalSolved, totalScore };
   }, [users]);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/auth/users`, {
+      const res = await fetch(`${API_BASE_URL}/auth/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +43,18 @@ export default function AdminPanel() {
     } catch (err) {
       console.error("Error fetching users", err);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+
+    if (!token || user?.role !== "admin") {
+      navigate("/", { replace: true });
+      return;
+    }
+
+    fetchUsers();
+  }, [fetchUsers, navigate, token]);
 
   const handleEditClick = (user) => {
     setEditingUser(user.email);
@@ -67,7 +68,7 @@ export default function AdminPanel() {
     setSaving(true);
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_SERVER_URL}/auth/update-user`,
+        `${API_BASE_URL}/auth/update-user`,
         {
           method: "POST",
           headers: {
@@ -250,3 +251,4 @@ export default function AdminPanel() {
     </div>
   );
 }
+

@@ -1,9 +1,10 @@
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { useToast } from "../components/toast-context.js";
 import { timeAgo } from "../utils/timeAgo.js";
 import StatusTimeline from "../components/status-timeline.jsx";
+import { API_BASE_URL } from "../config/api.js";
 
 const STATUS_BADGE = {
   Todo: "badge-ghost",
@@ -47,9 +48,17 @@ export default function TicketDetailsPage() {
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
-  const fetchTicket = async (silent = false) => {
+  const stopPolling = useCallback(() => {
+    setPolling(false);
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  const fetchTicket = useCallback(async (silent = false) => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/tickets/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/tickets/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -74,32 +83,24 @@ export default function TicketDetailsPage() {
     } finally {
       if (!silent) setLoading(false);
     }
-  };
+  }, [id, stopPolling, toast, token]);
 
-  const startPolling = () => {
+  const startPolling = useCallback(() => {
     if (intervalRef.current) return;
     setPolling(true);
     intervalRef.current = setInterval(() => fetchTicket(true), 5000);
-  };
-
-  const stopPolling = () => {
-    setPolling(false);
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
+  }, [fetchTicket]);
 
   useEffect(() => {
     fetchTicket().then(() => {});
     return () => stopPolling();
-  }, [id]);
+  }, [fetchTicket, stopPolling]);
 
   useEffect(() => {
     if (ticket && PROCESSING_STATUSES.includes(ticket.status)) {
       startPolling();
     }
-  }, [ticket?.status]);
+  }, [startPolling, ticket]);
 
   const canDelete =
     user?.role === "admin" ||
@@ -111,7 +112,7 @@ export default function TicketDetailsPage() {
 
     try {
       setDeleting(true);
-      const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/tickets/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/tickets/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -274,4 +275,5 @@ export default function TicketDetailsPage() {
     </div>
   );
 }
+
 
